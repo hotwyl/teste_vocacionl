@@ -1,0 +1,611 @@
+<!-- Criatividade
+Habilidade Analítica
+Comunicação
+Raciocínio Lógico
+Resolução de Problemas
+Trabalho em Equipe
+Inovação
+Liderança
+Adaptação a Mudanças
+Organização e Planejamento -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Teste Vocacional</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div id="app" class="container mt-5">
+        <div v-if="currentStep < questions.length">
+            <h2>{{ questions[currentStep].question }}</h2>
+            <p>{{ questions[currentStep].explanation }}</p>
+            <select v-model="answers[currentStep]">
+        <option v-for="option in questions[currentStep].options" :value="option.value">{{ option.text }}</option>
+      </select>
+            <button class="btn btn-primary" @click="nextStep">Próxima</button>
+        </div>
+        <div v-else>
+            <!-- Resultado -->
+            <h2>Resultado</h2>
+            <p>Com base nas suas respostas, aqui estão algumas dicas e orientações para a sua carreira:</p>
+            <ul>
+                <li>Criatividade: {{ points.creativity }}</li>
+                <li>Habilidade Analítica: {{ points.analytical }}</li>
+                <li>Comunicação: {{ points.communication }}</li>
+            </ul>
+            <p>Com base nos seus pontos, aqui estão algumas dicas e orientações para a sua carreira:</p>
+            <p>{{ careerAdvice }}</p>
+        </div>
+    </div>
+
+    <!-- Vue.js e Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                currentStep: 0,
+                answers: {
+                    creativity: null,
+                    analytical: null,
+                    communication: null,
+                    innovation: null,
+                    leadership: null,
+                    adaptability: null,
+                    organization: null,
+                    time_management: null,
+                    continuous_learning: null,
+                    resilience: null,
+                    collaboration: null,
+                    diversity: null,
+                    proactivity: null,
+                    tech_adaptability: null,
+                    pressure_handling: null,
+                    time_pressure_handling: null,
+                    routine_preference: null,
+                    feedback_handling: null,
+                    long_term_projects: null
+                },
+                questions: [{
+                    question: 'Quanto você gosta de resolver problemas lógicos?',
+                    explanation: 'Essa pergunta avalia sua habilidade analítica.',
+                    area: 'analytical',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Um pouco',
+                        value: 1
+                    }, {
+                        text: 'Moderadamente',
+                        value: 2
+                    }, {
+                        text: 'Muito',
+                        value: 3
+                    }]
+                }, {
+                    question: 'Quanto você gosta de resolver problemas complexos?',
+                    explanation: 'Essa pergunta avalia sua criatividade.',
+                    area: 'creativity',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes',
+                        value: 4
+                    }, {
+                        text: 'Muito',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Quanto você gosta de falar em público?',
+                    explanation: 'Essa pergunta avalia sua habilidade de comunicação.',
+                    area: 'communication',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes',
+                        value: 4
+                    }, {
+                        text: 'Muito',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Você gosta de encontrar maneiras não convencionais de abordar um problema?',
+                    explanation: 'Essa pergunta avalia sua criatividade.',
+                    area: 'creativity',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes',
+                        value: 4
+                    }, {
+                        text: 'Muito',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Você gosta de resolver problemas?',
+                    explanation: 'Essa pergunta avalia sua habilidade analítica.',
+                    area: 'analytical',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes',
+                        value: 4
+                    }, {
+                        text: 'Muito',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Você gosta de trabalhar com outras pessoas?',
+                    explanation: 'Essa pergunta avalia sua habilidade de comunicação.',
+                    area: 'communication',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes',
+                        value: 4
+                    }, {
+                        text: 'Muito',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Quanto você gosta de inovar em suas atividades?',
+                    explanation: 'Essa pergunta avalia sua capacidade de inovação.',
+                    area: 'innovation',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes',
+                        value: 4
+                    }, {
+                        text: 'Muito',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Como você se sente em situações de liderança?',
+                    explanation: 'Essa pergunta avalia sua preferência por papéis de liderança.',
+                    area: 'leadership',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes',
+                        value: 4
+                    }, {
+                        text: 'Muito',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Como você se adapta a mudanças em sua rotina?',
+                    explanation: 'Essa pergunta avalia sua capacidade de adaptação.',
+                    area: 'adaptability',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes',
+                        value: 4
+                    }, {
+                        text: 'Muito',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Você se considera uma pessoa organizada?',
+                    explanation: 'Essa pergunta avalia suas habilidades de organização e planejamento.',
+                    area: 'organization',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes',
+                        value: 4
+                    }, {
+                        text: 'Muito',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Como você lida com prazos apertados?',
+                    explanation: 'Essa pergunta avalia sua habilidade de gerenciamento do tempo.',
+                    area: 'time_management',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes, dependendo da situação',
+                        value: 4
+                    }, {
+                        text: 'Muito bem, gosto de desafios',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Quanto você valoriza a aprendizagem contínua?',
+                    explanation: 'Essa pergunta avalia sua motivação para adquirir novos conhecimentos.',
+                    area: 'continuous_learning',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes, dependendo da relevância',
+                        value: 4
+                    }, {
+                        text: 'Muito, estou sempre buscando aprender algo novo',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Você se sente confortável lidando com situações imprevisíveis?',
+                    explanation: 'Essa pergunta avalia sua resiliência em ambientes dinâmicos.',
+                    area: 'resilience',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes, dependendo da situação',
+                        value: 4
+                    }, {
+                        text: 'Muito, sou flexível e me adapto bem',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Você prefere trabalhar de forma independente ou em equipe?',
+                    explanation: 'Essa pergunta avalia sua preferência por colaboração ou autonomia.',
+                    area: 'collaboration',
+                    options: [{
+                        text: 'Independente',
+                        value: 0
+                    }, {
+                        text: 'Prefiro trabalhar sozinho, mas posso colaborar',
+                        value: 1
+                    }, {
+                        text: 'Gosto de colaborar e trabalhar em equipe',
+                        value: 2
+                    }, {
+                        text: 'Prefiro trabalhar em equipe, mas posso trabalhar sozinho',
+                        value: 3
+                    }, {
+                        text: 'Gosto de trabalhar sozinho e em equipe igualmente',
+                        value: 4
+                    }, {
+                        text: 'Prefiro trabalhar em equipe',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Quanto você valoriza a diversidade de ideias e opiniões?',
+                    explanation: 'Essa pergunta avalia sua abertura para diferentes perspectivas.',
+                    area: 'diversity',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes, dependendo do contexto',
+                        value: 4
+                    }, {
+                        text: 'Muito, acredito na importância da diversidade',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Você se considera uma pessoa proativa?',
+                    explanation: 'Essa pergunta avalia sua iniciativa para buscar oportunidades.',
+                    area: 'proactivity',
+                    options: [{
+                        text: 'Nada',
+                        value: 0
+                    }, {
+                        text: 'Não gosto',
+                        value: 1
+                    }, {
+                        text: 'Um pouco',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente',
+                        value: 3
+                    }, {
+                        text: 'Às vezes, dependendo da situação',
+                        value: 4
+                    }, {
+                        text: 'Muito, estou sempre buscando agir proativamente',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Como você se sente em relação a mudanças tecnológicas?',
+                    explanation: 'Essa pergunta avalia sua adaptabilidade a avanços tecnológicos.',
+                    area: 'tech_adaptability',
+                    options: [{
+                        text: 'Nada, não me sinto confortável com mudanças tecnológicas',
+                        value: 0
+                    }, {
+                        text: 'Não gosto muito, mas consigo me adaptar',
+                        value: 1
+                    }, {
+                        text: 'Um pouco apreensivo, mas aberto a aprender',
+                        value: 2
+                    }, {
+                        text: 'Moderadamente confortável com mudanças tecnológicas',
+                        value: 3
+                    }, {
+                        text: 'Bastante confortável, gosto de aprender sobre novas tecnologias',
+                        value: 4
+                    }, {
+                        text: 'Muito confortável, sou entusiasmado com avanços tecnológicos',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Como você lida com ambientes de alta pressão?',
+                    explanation: 'Essa pergunta avalia sua capacidade de trabalhar sob pressão.',
+                    area: 'pressure_handling',
+                    options: [{
+                        text: 'Não lido bem, fico muito estressado',
+                        value: 0
+                    }, {
+                        text: 'Consigo lidar, mas fico desconfortável',
+                        value: 1
+                    }, {
+                        text: 'Me adapto e mantenho o foco',
+                        value: 2
+                    }, {
+                        text: 'Gosto de desafios e trabalho bem sob pressão',
+                        value: 3
+                    }, {
+                        text: 'Muito bem, sou eficiente mesmo em situações de alta pressão',
+                        value: 4
+                    }, {
+                        text: 'Extremamente bem, prospero sob pressão',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Você se sente confortável lidando com prazos apertados?',
+                    explanation: 'Essa pergunta avalia sua habilidade de gerenciamento do tempo e pressão.',
+                    area: 'time_pressure_handling',
+                    options: [{
+                        text: 'Nada, fico muito estressado',
+                        value: 0
+                    }, {
+                        text: 'Não gosto, mas consigo cumprir',
+                        value: 1
+                    }, {
+                        text: 'Moderadamente confortável, consigo lidar bem',
+                        value: 2
+                    }, {
+                        text: 'Gosto de desafios e consigo cumprir prazos apertados',
+                        value: 3
+                    }, {
+                        text: 'Muito confortável, sou eficiente mesmo sob pressão',
+                        value: 4
+                    }, {
+                        text: 'Extremamente confortável, prospero em situações de pressão',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Você prefere seguir rotinas estabelecidas ou criar suas próprias abordagens?',
+                    explanation: 'Essa pergunta avalia sua preferência por estrutura ou flexibilidade.',
+                    area: 'routine_preference',
+                    options: [{
+                        text: 'Prefiro seguir rotinas estabelecidas',
+                        value: 0
+                    }, {
+                        text: 'Gosto de ter alguma estrutura, mas também flexibilidade',
+                        value: 1
+                    }, {
+                        text: 'Equilibro bem entre rotina e flexibilidade',
+                        value: 2
+                    }, {
+                        text: 'Gosto de ter flexibilidade, mas com alguma estrutura',
+                        value: 3
+                    }, {
+                        text: 'Prefiro criar minhas próprias abordagens e métodos',
+                        value: 4
+                    }, {
+                        text: 'Adoro ter total liberdade para criar e inovar',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Como você lida com feedback construtivo?',
+                    explanation: 'Essa pergunta avalia sua receptividade ao feedback para melhoria pessoal.',
+                    area: 'feedback_handling',
+                    options: [{
+                        text: 'Não lido bem, fico desconfortável',
+                        value: 0
+                    }, {
+                        text: 'Consigo lidar, mas nem sempre aplico',
+                        value: 1
+                    }, {
+                        text: 'Aprecio e tento aplicar o feedback',
+                        value: 2
+                    }, {
+                        text: 'Gosto de receber feedback, ajuda a melhorar meu desempenho',
+                        value: 3
+                    }, {
+                        text: 'Procuro ativamente feedback para melhorar constantemente',
+                        value: 4
+                    }, {
+                        text: 'Adoro receber feedback, é essencial para meu crescimento',
+                        value: 5
+                    }]
+                }, {
+                    question: 'Como você se sente em relação a trabalhar em projetos de longo prazo?',
+                    explanation: 'Essa pergunta avalia sua paciência e comprometimento com projetos extensos.',
+                    area: 'long_term_projects',
+                    options: [{
+                        text: 'Não gosto, prefiro tarefas mais curtas',
+                        value: 0
+                    }, {
+                        text: 'Consigo lidar, mas prefiro variedade',
+                        value: 1
+                    }, {
+                        text: 'Equilibro bem entre projetos de curto e longo prazo',
+                        value: 2
+                    }, {
+                        text: 'Gosto de me dedicar a projetos de longo prazo',
+                        value: 3
+                    }, {
+                        text: 'Prefiro trabalhar em projetos de longo prazo',
+                        value: 4
+                    }, {
+                        text: 'Adoro me envolver profundamente em projetos de longo prazo',
+                        value: 5
+                    }]
+                }],
+                points: {
+                    creativity: 0,
+                    analytical: 0,
+                    communication: 0
+                },
+                careerAdvice: ''
+            },
+            methods: {
+                nextStep() {
+                    if (this.answers[this.currentStep] === undefined) {
+                        alert('Por favor, responda a pergunta antes de prosseguir.');
+                    } else {
+                        if (this.currentStep === this.questions.length - 1) {
+                            this.calculateCareerAdvice();
+                        }
+                        this.calculatePoints();
+                        this.generateCareerAdvice();
+                        this.currentStep++;
+                    }
+                },
+                calculatePoints() {
+                    this.points.creativity = this.answers.creativity * /* Valor da Resposta */ ;
+                    this.points.analytical = this.answers.analytical * /* Valor da Resposta */ ;
+                    this.points.communication = this.answers.communication * /* Valor da Resposta */ ;
+                },
+                generateCareerAdvice() {
+                    // Lógica para gerar dicas e orientações com base nos pontos
+                    // Pode ser um switch/case ou estrutura de decisão similar
+                    this.careerAdvice = 'Com base nos seus pontos, aqui estão algumas dicas e orientações para a sua carreira:';
+                    // ...
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
