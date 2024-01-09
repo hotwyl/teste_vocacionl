@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Vocacional</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Google Charts -->
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
+            background-color: #f8f9fa;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .quadro {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            margin-top: 50px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .result-container {
+            margin-top: 30px;
+        }
+
+        @media print {
+            * {
+                background: transparent !important;
+                color: #000 !important;
+                text-shadow: none !important;
+                filter: none !important;
+                -ms-filter: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            footer,
+            button {
+                display: none !important;
+            }
+            .quadro {
+                min-width: 99vw !important;
+                border: none !important; 
+                box-shadow:none !important;
+            }
+        }
+
+        @page {
+            size: A4;
+            margin: 1.5cm;
+      }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+
+        <div class="quadro">
+
+            <!-- Cabeçalho -->
+            <header class="text-center mb-4">
+                <h1 class="display-4">Teste Vocacional</h1>
+                <p class="lead">Descubra suas habilidades e interesses!</p>
+            </header>
+
+            <main>
+                <!-- Barra de Progresso -->
+                <section class="progress mb-4">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" :style="{ width: progressPercentage + '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </section>
+
+                <article>
+
+                    <div v-if="currentStep < questions.length">
+                        <!-- Perguntas -->
+                        <h2>{{ questions[currentStep].question }}</h2>
+                        <p><small class="text-muted">{{ questions[currentStep].explanation }}</small></p>
+
+                        <div v-for="(option, index) in opts" :key="index" class="form-check form-check-inline">
+                            <input type="radio" :id="'option' + index" :value="option.value" v-model="answers[currentStep]" class="form-check-input"/>
+                            <label class="form-check-label" :for="'option' + index" :for="'option' + index" :value="option.value">{{ option.text }}</label>
+                        </div>
+
+                        <div class="d-grid gap-2 col-5 mx-auto text-center pt-5 pb-3">
+                            <button type="button" class="btn btn-outline-primary btn-sm rounded-5" @click="validateAndNext" role="button">Próxima</button>
+                        </div>
+                        
+
+                        <!-- <button @click="calculateResults" class="btn btn-primary">Finalizar Teste</button> -->
+                    </div>
+
+                    <div v-else class="result-container">
+                        <!-- Resultado -->
+                        <h2 class="text-center">Resultado</h2>
+                        <p>Com base nas suas respostas, aqui estão algumas dicas e orientações para a sua carreira:</p>
+                        <ul>
+                            <li v-for="(value, key) in careerAdvice" :key="key"> 
+
+                                <span v-if="value.resultado.classificacao == 'positivo'"> 
+                                    <strong> {{ value.area }} </strong> : <small class="text-success"> {{ value.resultado.descricao }}</small> 
+                                </span>
+
+                                <span v-else> 
+                                    <strong> {{ value.area }} </strong> : <small class="text-danger"> {{ value.resultado.descricao }}</small> 
+                                </span>
+                                
+                            </li>
+                        </ul>
+
+                        <div class="d-flex justify-content-end"> <small><em>Teste realizado em {{dataTeste}}</em></small> </div>
+
+                        <div class="d-flex justify-content-evenly pt-3">
+                            <button @click="btnBack" class="btn btn-outline-secondary btn-sm rounded-3">Voltar</button>
+                            <button @click="btnPrint" class="btn btn-outline-secondary btn-sm rounded-3">Imprimir</button>
+                        </div>
+
+                        <!-- <p>{{ careerAdvice }}</p>
+                        <div id="myPieChart" style="width: 100%; height: 300px;"></div> -->
+                    </div>
+
+                </article>
+
+            </main>
+
+        </div>
+
+        <!-- Rodapé -->
+        <footer class="text-center mt-4">
+            <p class="text-muted"> <small> Feito com ♥ por hotwyl | Teste Vocacional&reg; Todos os direitos reservados | &copy; <a href="#" target="_blank">WILLFROMBRASIL</a>™ Company Inc <span>{{ year }}</span></small></p>
+        </footer>
+    </div>
+
+
+
+    <!-- Vue.js e Bootstrap JS -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" integrity="sha512-uKQ39gEGiyUJl4AI6L+ekBdGKpGw4xJ55+xyJG7YFlJokPNYegn9KwQ3P8A7aFQAUtUsAQHep+d/lrGqrbPIDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script src="https://www.gstatic.com/charts/loader.js"></script> -->
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    currentStep: 0,
+                    progressPercentage: 0,
+                    answers: {
+                        creativity: 0,
+                        analytical: 0,
+                        communication: 0,
+                        innovation: 0,
+                        leadership: 0,
+                        adaptability: 0,
+                        organization: 0,
+                        time_management: 0,
+                        continuous_learning: 0,
+                        resilience: 0,
+                        collaboration: 0,
+                        diversity: 0,
+                        proactivity: 0,
+                        tech_adaptability: 0,
+                        pressure_handling: 0,
+                        time_pressure_handling: 0,
+                        routine_preference: 0,
+                        feedback_handling: 0,
+                        long_term_projects: 0
+                    },
+                    opts: [{
+                            text: 'Nada',
+                            value: 0
+                        }, {
+                            text: 'Não gosto',
+                            value: 1
+                        }, {
+                            text: 'Um pouco',
+                            value: 2
+                        }, {
+                            text: 'Moderadamente',
+                            value: 3
+                        }, {
+                            text: 'Às vezes',
+                            value: 4
+                        }, {
+                            text: 'Muito',
+                            value: 5
+                        }],
+                    questions: [{
+                        question: 'Quanto você gosta de resolver problemas lógicos?',
+                        explanation: 'Essa pergunta avalia sua habilidade analítica.',
+                        area: 'analytical'
+                        },  {
+                            question: 'Quanto você gosta de resolver problemas complexos?',
+                            explanation: 'Essa pergunta avalia sua criatividade.',
+                            area: 'creativity'
+                        }, {
+                            question: 'Quanto você gosta de falar em público?',
+                            explanation: 'Essa pergunta avalia sua habilidade de comunicação.',
+                            area: 'communication'
+                        }, /*{
+                            question: 'Você gosta de encontrar maneiras não convencionais de abordar um problema?',
+                            explanation: 'Essa pergunta avalia sua criatividade.',
+                            area: 'creativity'
+                        }, {
+                            question: 'Você gosta de resolver problemas?',
+                            explanation: 'Essa pergunta avalia sua habilidade analítica.',
+                            area: 'analytical'
+                        }, {
+                            question: 'Você gosta de trabalhar com outras pessoas?',
+                            explanation: 'Essa pergunta avalia sua habilidade de comunicação.',
+                            area: 'communication'
+                        }, {
+                            question: 'Quanto você gosta de inovar em suas atividades?',
+                            explanation: 'Essa pergunta avalia sua capacidade de inovação.',
+                            area: 'innovation'
+                        }, {
+                            question: 'Como você se sente em situações de liderança?',
+                            explanation: 'Essa pergunta avalia sua preferência por papéis de liderança.',
+                            area: 'leadership'
+                        }, {
+                            question: 'Como você se adapta a mudanças em sua rotina?',
+                            explanation: 'Essa pergunta avalia sua capacidade de adaptação.',
+                            area: 'adaptability'
+                        }, {
+                            question: 'Você se considera uma pessoa organizada?',
+                            explanation: 'Essa pergunta avalia suas habilidades de organização e planejamento.',
+                            area: 'organization'
+                        }, {
+                            question: 'Como você lida com prazos apertados?',
+                            explanation: 'Essa pergunta avalia sua habilidade de gerenciamento do tempo.',
+                            area: 'time_management'
+                        }, {
+                            question: 'Quanto você valoriza a aprendizagem contínua?',
+                            explanation: 'Essa pergunta avalia sua motivação para adquirir novos conhecimentos.',
+                            area: 'continuous_learning'
+                        }, {                        },  {
+                            question: 'Quanto você gosta de resolver problemas complexos?',
+                            explanation: 'Essa pergunta avalia sua criatividade.',
+                            area: 'creativity'
+                        }, {
+                            question: 'Quanto você gosta de falar em público?',
+                            explanation: 'Essa pergunta avalia sua habilidade de comunicação.',
+                            area: 'communication'
+                        }, {
+                            question: 'Você gosta de encontrar maneiras não convencionais de abordar um problema?',
+                            explanation: 'Essa pergunta avalia sua criatividade.',
+                            area: 'creativity'
+                        }, {
+                            question: 'Você gosta de resolver problemas?',
+                            explanation: 'Essa pergunta avalia sua habilidade analítica.',
+                            area: 'analytical'
+                        }, {
+                            question: 'Você gosta de trabalhar com outras pessoas?',
+                            explanation: 'Essa pergunta avalia sua habilidade de comunicação.',
+                            area: 'communication'
+                        }, {
+                            question: 'Quanto você gosta de inovar em suas atividades?',
+                            explanation: 'Essa pergunta avalia sua capacidade de inovação.',
+                            area: 'innovation'
+                        }, {
+                            question: 'Como você se sente em situações de liderança?',
+                            explanation: 'Essa pergunta avalia sua preferência por papéis de liderança.',
+                            area: 'leadership'
+                        }, {
+                            question: 'Como você se adapta a mudanças em sua rotina?',
+                            explanation: 'Essa pergunta avalia sua capacidade de adaptação.',
+                            area: 'adaptability'
+                        }, {
+                            question: 'Você se considera uma pessoa organizada?',
+                            explanation: 'Essa pergunta avalia suas habilidades de organização e planejamento.',
+                            area: 'organization'
+                        }, {
+                            question: 'Como você lida com prazos apertados?',
+                            explanation: 'Essa pergunta avalia sua habilidade de gerenciamento do tempo.',
+                            area: 'time_management'
+                        }, {
+                            question: 'Quanto você valoriza a aprendizagem contínua?',
+                            explanation: 'Essa pergunta avalia sua motivação para adquirir novos conhecimentos.',
+                            area: 'continuous_learning'
+                        }, {
+                            question: 'Você se sente confortável lidando com situações imprevisíveis?',
+                            explanation: 'Essa pergunta avalia sua resiliência em ambientes dinâmicos.',
+                            area: 'resilience'
+                        }, {
+                            question: 'Você prefere trabalhar de forma independente ou em equipe?',
+                            explanation: 'Essa pergunta avalia sua preferência por colaboração ou autonomia.',
+                            area: 'collaboration'
+                        }, {
+                            question: 'Quanto você valoriza a diversidade de ideias e opiniões?',
+                            explanation: 'Essa pergunta avalia sua abertura para diferentes perspectivas.',
+                            area: 'diversity'
+                        }, {
+                            question: 'Você se considera uma pessoa proativa?',
+                            explanation: 'Essa pergunta avalia sua iniciativa para buscar oportunidades.',
+                            area: 'proactivity'
+                        }, {
+                            question: 'Como você se sente em relação a mudanças tecnológicas?',
+                            explanation: 'Essa pergunta avalia sua adaptabilidade a avanços tecnológicos.',
+                            area: 'tech_adaptability'
+                        }, {
+                            question: 'Como você lida com ambientes de alta pressão?',
+                            explanation: 'Essa pergunta avalia sua capacidade de trabalhar sob pressão.',
+                            area: 'pressure_handling'
+                        }, {
+                            question: 'Você se sente confortável lidando com prazos apertados?',
+                            explanation: 'Essa pergunta avalia sua habilidade de gerenciamento do tempo e pressão.',
+                            area: 'time_pressure_handling'
+                        }, {
+                            question: 'Você prefere seguir rotinas estabelecidas ou criar suas próprias abordagens?',
+                            explanation: 'Essa pergunta avalia sua preferência por estrutura ou flexibilidade.',
+                            area: 'routine_preference'
+                        }, {
+                            question: 'Como você lida com feedback construtivo?',
+                            explanation: 'Essa pergunta avalia sua receptividade ao feedback para melhoria pessoal.',
+                            area: 'feedback_handling'
+                        }, {
+                            question: 'Como você se sente em relação a trabalhar em projetos de longo prazo?',
+                            explanation: 'Essa pergunta avalia sua paciência e comprometimento com projetos extensos.',
+                            area: 'long_term_projects'
+                        }, {
+                            question: 'Você se sente confortável lidando com situações imprevisíveis?',
+                            explanation: 'Essa pergunta avalia sua resiliência em ambientes dinâmicos.',
+                            area: 'resilience'
+                        }, {
+                            question: 'Você prefere trabalhar de forma independente ou em equipe?',
+                            explanation: 'Essa pergunta avalia sua preferência por colaboração ou autonomia.',
+                            area: 'collaboration'
+                        }, {
+                            question: 'Quanto você valoriza a diversidade de ideias e opiniões?',
+                            explanation: 'Essa pergunta avalia sua abertura para diferentes perspectivas.',
+                            area: 'diversity'
+                        }, {
+                            question: 'Você se considera uma pessoa proativa?',
+                            explanation: 'Essa pergunta avalia sua iniciativa para buscar oportunidades.',
+                            area: 'proactivity'
+                        }, {
+                            question: 'Como você se sente em relação a mudanças tecnológicas?',
+                            explanation: 'Essa pergunta avalia sua adaptabilidade a avanços tecnológicos.',
+                            area: 'tech_adaptability'
+                        }, {
+                            question: 'Como você lida com ambientes de alta pressão?',
+                            explanation: 'Essa pergunta avalia sua capacidade de trabalhar sob pressão.',
+                            area: 'pressure_handling'
+                        }, {
+                            question: 'Você se sente confortável lidando com prazos apertados?',
+                            explanation: 'Essa pergunta avalia sua habilidade de gerenciamento do tempo e pressão.',
+                            area: 'time_pressure_handling'
+                        }, {
+                            question: 'Você prefere seguir rotinas estabelecidas ou criar suas próprias abordagens?',
+                            explanation: 'Essa pergunta avalia sua preferência por estrutura ou flexibilidade.',
+                            area: 'routine_preference'
+                        }, {
+                            question: 'Como você lida com feedback construtivo?',
+                            explanation: 'Essa pergunta avalia sua receptividade ao feedback para melhoria pessoal.',
+                            area: 'feedback_handling'
+                        }, {
+                            question: 'Como você se sente em relação a trabalhar em projetos de longo prazo?',
+                            explanation: 'Essa pergunta avalia sua paciência e comprometimento com projetos extensos.',
+                            area: 'long_term_projects'
+                        }*/
+                    ],
+                    points: {
+                        creativity: 0,
+                        analytical: 0,
+                        communication: 0,
+                        innovation: 0,
+                        leadership: 0,
+                        adaptability: 0,
+                        organization: 0,
+                        time_management: 0,
+                        continuous_learning: 0,
+                        resilience: 0,
+                        collaboration: 0,
+                        diversity: 0,
+                        proactivity: 0,
+                        tech_adaptability: 0,
+                        pressure_handling: 0,
+                        time_pressure_handling: 0,
+                        routine_preference: 0,
+                        feedback_handling: 0,
+                        long_term_projects: 0
+                    },
+                    careerAdvice: '',
+                    results: null,
+                    year: new Date().getFullYear(),
+                    dataTeste: new Date(),
+                    simulou: false,
+                    loading: false
+                };
+            },
+            methods: {
+                drawChart() {
+                    // Verifica se google.visualization existe antes de usar
+                    if (google.visualization) {
+                        // Define o gráfico a ser desenhado
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Element');
+                        data.addColumn('number', 'Percentage');
+                        data.addRows([
+                            ['Nitrogen', 0.78],
+                            ['Oxygen', 0.21],
+                            ['Other', 0.01]
+                        ]);
+
+                        // Instancia e desenha o gráfico
+                        var chart = new google.visualization.PieChart(document.getElementById('myPieChart'));
+                        chart.draw(data, null);
+                    } else {
+                        console.error('A biblioteca Google Charts não está carregada corretamente.');
+                    }
+                },
+                validateAndNext() {
+                    const validat = [null, undefined, false, [], '']
+                    // Verifica se a pergunta atual foi respondida
+                    
+                    if (validat.includes(this.answers[this.currentStep])) {
+                         // Exibe um alerta usando SweetAlert2 se a pergunta não foi respondida
+                         Swal.fire({
+                            position: 'top-center',
+                            icon: 'error',
+                            title: 'Oops...',
+                            html: '<p>Por favor, responda a pergunta antes de prosseguir!</p>',
+                            showConfirmButton: true,
+                            showCloseButton: true,
+                            timer: 3000
+                        });
+                    } else {
+                       
+                        // Atualiza a barra de progresso
+                        this.progressPercentage = ((this.currentStep + 1) / this.questions.length) * 100;
+
+                        // Avança para a próxima pergunta
+                        this.nextStep();
+                    }
+                },
+                nextStep() {                    
+                    this.loading = true;
+
+                    // if (this.currentStep === this.questions.length - 1) {
+                    //     this.calculateCareerAdvice();
+                    // }
+
+                    this.calculatePoints();
+                    this.generateCareerAdvice();
+                    this.currentStep++;
+                },
+                calculatePoints() {                    
+                    // Se desejar, você pode exibir os pontos calculados com console.log
+                    this.points[this.questions[this.currentStep].area] = this.points[this.questions[this.currentStep].area] + this.answers[this.currentStep];
+                    // console.log('Pontuações Calculadas:', this.points);
+                },
+                generateCareerAdvice() {
+                    this.loading = true;
+
+                    // Exemplo de lógica simples para ilustração
+                    let advice = 'Com base nos seus pontos, aqui estão algumas dicas e orientações para a sua carreira:';
+                    let infor = []
+
+                    let teste = Object.values(this.points).sort(function(a, b) {return a - b;});
+                    let max = Math.max(... teste );
+                    let newscor = teste[teste.length - 3]
+                    
+                    // Analisando cada área e dando uma recomendação
+                    Object.keys(this.points).forEach((area) => {
+                        const score = this.points[area];
+
+                        switch (area) {
+                            case 'creativity':
+                                infor.push({'area':'Criatividade', 'resultado':this.getRecommendation('creativity', score, newscor)});
+                                break;
+                            case 'analytical':
+                                infor.push({'area':'Habilidade Analítica', 'resultado':this.getRecommendation('analytical', score, newscor)});
+                                break;
+                            case 'communication':
+                                infor.push({'area':'Comunicação', 'resultado':this.getRecommendation('communication', score, newscor)});
+                                break;
+                            case 'innovation':
+                                infor.push({'area':'Inovação', 'resultado':this.getRecommendation('innovation', score, newscor)});
+                                break;
+                            case 'leadership':
+                                infor.push({'area':'Liderança', 'resultado':this.getRecommendation('leadership', score, newscor)});
+                                break;
+                            case 'adaptability':
+                                infor.push({'area':'Adaptabilidade', 'resultado':this.getRecommendation('adaptability', score, newscor)});
+                                break;
+                            case 'organization':
+                                infor.push({'area':'Organização', 'resultado':this.getRecommendation('organization', score, newscor)});
+                                break;
+                            case 'time_management':
+                                infor.push({'area':'Gestão do Tempo', 'resultado':this.getRecommendation('time_management', score, newscor)});
+                                break;
+                            case 'continuous_learning':
+                                infor.push({'area':'Aprendizado Contínuo', 'resultado':this.getRecommendation('continuous_learning', score, newscor)});
+                                break;
+                            case 'resilience':
+                                infor.push({'area':'Resiliência', 'resultado':this.getRecommendation('resilience', score, newscor)});
+                                break;
+                            case 'collaboration':
+                                infor.push({'area':'Colaboração', 'resultado':this.getRecommendation('collaboration', score, newscor)});
+                                break;
+                            case 'diversity':
+                                infor.push({'area':'Diversidade', 'resultado':this.getRecommendation('diversity', score, newscor)});
+                                break;
+                            case 'proactivity':
+                                infor.push({'area':'Proatividade', 'resultado':this.getRecommendation('proactivity', score, newscor)});
+                                break;
+                            case 'tech_adaptability':
+                                infor.push({'area':'Adaptabilidade Tecnológica', 'resultado':this.getRecommendation('tech_adaptability', score, newscor)});
+                                break;
+                            case 'pressure_handling':
+                                infor.push({'area':'Lidar com Pressão', 'resultado':this.getRecommendation('pressure_handling', score, newscor)});
+                                break;
+                            case 'time_pressure_handling':
+                                infor.push({'area':'Lidar com Pressão Temporal', 'resultado':this.getRecommendation('time_pressure_handling', score, newscor)});
+                                break;
+                            case 'routine_preference':
+                                infor.push({'area':'Preferência por Rotina', 'resultado':this.getRecommendation('routine_preference', score, newscor)});
+                                break;
+                            case 'feedback_handling':
+                                infor.push({'area':'Lidar com Feedback', 'resultado':this.getRecommendation('feedback_handling', score, newscor)});
+                                break;
+                            case 'long_term_projects':
+                                infor.push({'area':'Projetos de Longo Prazo', 'resultado':this.getRecommendation('long_term_projects', score, newscor)});
+                                break;
+                            default:
+                                infor.push({'area':area, 'resultado':'Sem recomendação específica'});
+                        }
+                    });
+
+                    // Atribui as dicas geradas à variável careerAdvice
+                    this.careerAdvice = infor;
+                    let date = new Date();
+                    this.dataTeste = date.toLocaleDateString('pt-BR');
+                    this.loading = false;
+                    this.simulou = true;
+                },
+                handleAnswer(answer, area) {
+                    // Atualize a pontuação da área com base na resposta
+                    this.answers[area] = answer;
+
+                    // Se desejar, você pode exibir a pontuação atual com console.log
+                    console.log('Pontuações Atuais:', this.answers);
+                },
+                calculateResults() {
+                    // Lógica de cálculo com base nas respostas
+                    // Atualize conforme necessário com a fórmula de pontuação desejada
+                    // Exemplo: this.answers.creativity + this.answers.analytical + ...
+
+                    // Lógica de cálculo com base nas respostas
+                    // Atualize conforme necessário com a fórmula de pontuação desejada
+                    this.results = {
+                        creativity: this.answers.creativity || 0,
+                        analytical: this.answers.analytical || 0,
+                        communication: this.answers.communication || 0,
+                        innovation: this.answers.innovation || 0,
+                        leadership: this.answers.leadership || 0,
+                        adaptability: this.answers.adaptability || 0,
+                        organization: this.answers.organization || 0,
+                        time_management: this.answers.time_management || 0,
+                        continuous_learning: this.answers.continuous_learning || 0,
+                        resilience: this.answers.resilience || 0,
+                        collaboration: this.answers.collaboration || 0,
+                        diversity: this.answers.diversity || 0,
+                        proactivity: this.answers.proactivity || 0,
+                        tech_adaptability: this.answers.tech_adaptability || 0,
+                        pressure_handling: this.answers.pressure_handling || 0,
+                        time_pressure_handling: this.answers.time_pressure_handling || 0,
+                        routine_preference: this.answers.routine_preference || 0,
+                        feedback_handling: this.answers.feedback_handling || 0,
+                        long_term_projects: this.answers.long_term_projects || 0
+                    };
+
+                    // Se desejar, você pode exibir os resultados com console.log
+                    console.log('Resultados Calculados:', this.results);
+
+                    // Carrega a biblioteca Google Charts
+                    google.charts.load('current', {packages: ['corechart']});
+
+                    // Define o callback para ser chamado quando a biblioteca estiver carregada
+                    google.charts.setOnLoadCallback(this.drawChart);
+
+                    this.drawChart()
+                },
+                getRecommendation(area, score, max) {
+                    // Lógica para gerar recomendação com base nos pontos
+                    // Personalize conforme necessário
+                    return score >= max ? {'classificacao': 'positivo', 'descricao': 'Você demonstra fortes habilidades nessa área.'} : {'classificacao': 'negativo', 'descricao': 'Há oportunidades para desenvolver mais suas habilidades nesta área.'};
+                },
+                btnBack(){
+                    window.location.reload(true);
+                },
+                btnPrint(){
+                    if (this.simulou == false) {
+                        Swal.fire({
+                            position: 'top-center',
+                            icon: 'error',
+                            title: 'Simulação não realizada',
+                            html: '<p>Para imprimir o resultado da simulação, é necessário realizar a simulação primeiro.</p>',
+                            showConfirmButton: true,
+                            showCloseButton: true,
+                            timer: 3000
+                        })
+                    } else {
+                        window.print();
+                    }
+                }
+            },
+            created() {
+                this.year = new Date().getFullYear();
+            },
+            mounted() {
+            },
+            updated() {
+            }
+        });
+
+        // Seus componentes globais ou plugins podem ser registrados aqui, se necessário
+
+        app.mount('#app');
+    </script>
+</body>
+
+</html>
